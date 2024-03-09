@@ -5,8 +5,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'mvn clean install'
-                    echo 'Build Stage Successful'
+                    // Compile the .cpp file using g++ compiler
+                    sh 'g++ -o output_file hello.cpp'
                 }
             }
         }
@@ -14,30 +14,23 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    sh 'mvn test'
-                    echo 'Test Stage Successful'
-                    post {
-                        always {
-                            junit 'target/surefire-reports/ *. xml'
-                        }
-                    }
+                    // Execute the compiled C++ file and print the output
+                    sh './output_file'
                 }
             }
         }
         
         stage('Deploy') {
             steps {
-                script {
-                    sh 'mvn deploy'
-                    echo 'Deployment Successful'
-                }
+                // Add deployment steps here if needed
             }
         }
     }
     
     post {
-        failure {
-            echo 'Pipeline failed'
+        always {
+            // Display 'pipeline failed' in case of any errors
+            echo 'pipeline failed'
         }
     }
 }
